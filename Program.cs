@@ -40,7 +40,8 @@ namespace wheeloffortuneandrobots
                 do
                 {
                     chosenCategory = allCategories[random.Next(allCategories.Length)];
-                } while (!categories.Contains(chosenCategory));
+                } while (categories.Contains(chosenCategory));
+                categories[i] = chosenCategory;
             }
 
             if (debugMessagesOn)
