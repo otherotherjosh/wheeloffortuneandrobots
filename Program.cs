@@ -41,10 +41,13 @@ namespace wheeloffortuneandrobots
         /// <param name="gameNumber"></param>
         public static void PlayWordGame(int gameNumber)
         {
-            while (lettersUsed.Count < 26)
+            string category = categories[gameNumber];
+            string word = words[gameNumber];
+
+            while (lettersUsed.Count < 26) // incorrect conditional for ending the round
             {
                 Console.Clear();
-                PWGVisualizer();
+                PWGVisualizer(category, word);
                 string userInput = Console.ReadLine()
                     .ToUpper().Replace(" ", "");
                 if (userInput.Length == 1)
@@ -56,13 +59,29 @@ namespace wheeloffortuneandrobots
             }
         }
 
-        static void PWGVisualizer()
+        static void PWGVisualizer(string category, string word)
         {
-            Decor.Highlight("letter bank:\n\t");
+            Decor.Highlight($"\n\t^w^Category: ^e^{category}\n\n");
+
+            int wordCount = 0;
+            char[] wordLetters = word.ToCharArray();
+            Console.Write("\t");
+            foreach (char wordLetter in wordLetters)
+            {
+                if (lettersUsed.Contains(wordLetter)) Decor.Highlight($"^w^{wordLetter} ");
+                else if (letters.Contains(wordLetter)) Decor.Highlight("^w^_ ");
+                else
+                {
+                    wordCount++;
+                    if (wordCount % 3 == 0) Console.Write("\n\t");
+                    else Console.Write("  ");
+                }
+            }
+            Console.Write("\n\n\n\t");
             foreach (char letter in letters)
             {
                 if (lettersUsed.Contains(letter)) Decor.Highlight($"^g^{letter} ^w^");
-                else Decor.Highlight($"^w^{letter} ^w^");
+                else Decor.Highlight($"^b^{letter} ^w^");
             }
         }
 
