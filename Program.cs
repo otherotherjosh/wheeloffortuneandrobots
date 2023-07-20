@@ -17,7 +17,8 @@ namespace wheeloffortuneandrobots
             WordGame.InitGame();
             for (int i = 0; i < 3; i++)
             {
-                WordGame.PlayWordGame(i);
+                
+                WordGame.PlayWordGameRound(i);
             }
         }
     }
@@ -34,29 +35,39 @@ namespace wheeloffortuneandrobots
         static string[] categories;
         static string[] words;
         static List<char> lettersUsed = new List<char>();
+        static bool roundOver;
 
         /// <summary>
         /// plays a round of the word game
         /// </summary>
         /// <param name="gameNumber"></param>
-        public static void PlayWordGame(int gameNumber)
+        public static void PlayWordGameRound(int gameNumber)
         {
             string category = categories[gameNumber];
             string word = words[gameNumber];
+            lettersUsed = new List<char>();
+            roundOver = false;
 
-            while (lettersUsed.Count < 26) // incorrect conditional for ending the round
+            do // incorrect conditional for ending the round
             {
                 Console.Clear();
                 PWGVisualizer(category, word);
-                string userInput = Console.ReadLine()
-                    .ToUpper().Replace(" ", "");
-                if (userInput.Length == 1)
+                if (!roundOver)
                 {
-                    char letter = Convert.ToChar(userInput);
-                    if (letters.Contains(letter)
-                        && ! lettersUsed.Contains(letter)) lettersUsed.Add(letter);
+                    string userInput = Console.ReadLine()
+                        .ToUpper().Replace(" ", "");
+                    if (userInput.Length == 1)
+                    {
+                        char letter = Convert.ToChar(userInput);
+                        if (letters.Contains(letter)
+                            && ! lettersUsed.Contains(letter)) lettersUsed.Add(letter);
+                    }
                 }
-            }
+                else
+                {
+                    Console.ReadLine();
+                }
+            } while (!roundOver);
         }
 
         static void PWGVisualizer(string category, string word)
@@ -66,10 +77,15 @@ namespace wheeloffortuneandrobots
             int wordCount = 0;
             char[] wordLetters = word.ToCharArray();
             Console.Write("\t");
+            roundOver = true;
             foreach (char wordLetter in wordLetters)
             {
                 if (lettersUsed.Contains(wordLetter)) Decor.Highlight($"^w^{wordLetter} ");
-                else if (letters.Contains(wordLetter)) Decor.Highlight("^w^_ ");
+                else if (letters.Contains(wordLetter))
+                {
+                    roundOver = false;
+                    Decor.Highlight("^w^_ ");
+                }
                 else
                 {
                     wordCount++;
@@ -78,10 +94,17 @@ namespace wheeloffortuneandrobots
                 }
             }
             Console.Write("\n\n\n\t");
-            foreach (char letter in letters)
+            if (!roundOver)
             {
-                if (lettersUsed.Contains(letter)) Decor.Highlight($"^g^{letter} ^w^");
-                else Decor.Highlight($"^b^{letter} ^w^");
+                foreach (char letter in letters)
+                {
+                    if (lettersUsed.Contains(letter)) Decor.Highlight($"^g^{letter} ^w^");
+                    else Decor.Highlight($"^b^{letter} ^w^");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Congrats! :D");
             }
         }
 
