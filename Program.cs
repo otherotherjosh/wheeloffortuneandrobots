@@ -174,23 +174,22 @@ namespace wheeloffortuneandrobots
             {
                 switch (splitLine)
                 {
-                    case "g":
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-                        break;
-                    case "y":
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        break;
                     case "b":
                         Console.ForegroundColor = ConsoleColor.Cyan;
+                        break;
+                    case "e":
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        break;
+                    case "g":
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
                         break;
                     case "r":
                         Console.ForegroundColor = ConsoleColor.Red;
                         break;
+                    case "y":
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        break;
                     case "w":
-                    case "/g":
-                    case "/y":
-                    case "/b":
-                    case "/r":
                         Console.ForegroundColor = ConsoleColor.White;
                         break;
                     default:
