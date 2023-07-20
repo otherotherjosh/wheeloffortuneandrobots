@@ -33,7 +33,7 @@ namespace wheeloffortuneandrobots
         static char[] letters = new char[26];
         static string[] categories;
         static string[] words;
-        static List<char> lettersUsed;
+        static List<char> lettersUsed = new List<char>();
 
         /// <summary>
         /// plays a round of the word game
@@ -41,15 +41,28 @@ namespace wheeloffortuneandrobots
         /// <param name="gameNumber"></param>
         public static void PlayWordGame(int gameNumber)
         {
-            //while ()
+            while (lettersUsed.Count < 26)
+            {
+                Console.Clear();
+                PWGVisualizer();
+                string userInput = Console.ReadLine()
+                    .ToUpper().Replace(" ", "");
+                if (userInput.Length == 1)
+                {
+                    char letter = Convert.ToChar(userInput);
+                    if (letters.Contains(letter)
+                        && ! lettersUsed.Contains(letter)) lettersUsed.Add(letter);
+                }
+            }
         }
 
         static void PWGVisualizer()
         {
+            Decor.Highlight("letter bank:\n\t");
             foreach (char letter in letters)
             {
-                if (lettersUsed.Contains(letter)) Decor.Highlight($"^g^{letter}^w^");
-                if (lettersUsed.Contains(letter)) Decor.Highlight($"^w^{letter}^w^");
+                if (lettersUsed.Contains(letter)) Decor.Highlight($"^g^{letter} ^w^");
+                else Decor.Highlight($"^w^{letter} ^w^");
             }
         }
 
