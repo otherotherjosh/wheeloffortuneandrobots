@@ -1,5 +1,7 @@
 ﻿// https://www.wheeloffortunecheats.com/
 
+using static System.Net.Mime.MediaTypeNames;
+
 namespace wheeloffortuneandrobots
 {
     public struct PlayerBase
@@ -13,6 +15,10 @@ namespace wheeloffortuneandrobots
         static void Main(string[] args)
         {
             WordGame.InitGame();
+            for (int i = 0; i < 3; i++)
+            {
+                WordGame.PlayWordGame(i);
+            }
         }
     }
 
@@ -24,6 +30,28 @@ namespace wheeloffortuneandrobots
     public class WordGame
     {
         static bool debugMessagesOn = true;
+        static char[] letters = new char[26];
+        static string[] categories;
+        static string[] words;
+        static List<char> lettersUsed;
+
+        /// <summary>
+        /// plays a round of the word game
+        /// </summary>
+        /// <param name="gameNumber"></param>
+        public static void PlayWordGame(int gameNumber)
+        {
+            //while ()
+        }
+
+        static void PWGVisualizer()
+        {
+            foreach (char letter in letters)
+            {
+                if (lettersUsed.Contains(letter)) Decor.Highlight($"^g^{letter}^w^");
+                if (lettersUsed.Contains(letter)) Decor.Highlight($"^w^{letter}^w^");
+            }
+        }
 
         /// <summary>
         /// generates the game categories
@@ -31,8 +59,15 @@ namespace wheeloffortuneandrobots
         public static void InitGame()
         {
             int categoryCount = 3;  // link this to user-configurable game length
-            string[] categories = GetGameCategories(categoryCount);
-            string[] words = GetGameWords(categories);
+            categories = GetGameCategories(categoryCount);
+            words = GetGameWords(categories);
+            int letterNum = 0;
+            for (char letter = 'A'; letter <= 'Z'; letter++)
+            {
+                letters[letterNum] = letter;
+                letterNum++;
+                if (debugMessagesOn) Decor.Highlight($"^r^(debug)^g^ added {letter} to letters array\n^w^");
+            }
         }
 
         static string[] GetGameCategories(int categoryCount)
@@ -56,11 +91,11 @@ namespace wheeloffortuneandrobots
 
             if (debugMessagesOn)
             {
-                Console.WriteLine("(debug) items in full category array");
-                foreach (string category in allCategories) Console.WriteLine($"- {category}");
-                Console.WriteLine();
-                Console.WriteLine("(debug) items in game category array");
-                foreach(string category in categories) Console.WriteLine($"- {category}");
+                Decor.Highlight("^r^(debug)^g^ items in full category array\n");
+                foreach (string category in allCategories) Decor.Highlight($"\t- {category}\n");
+                Decor.Highlight("^r^(debug)^g^ items in game category array\n");
+                foreach(string category in categories) Decor.Highlight($"\t- {category}\n");
+                Decor.Highlight("^w^");
             }
             
             return categories;
@@ -78,7 +113,7 @@ namespace wheeloffortuneandrobots
                     + category.ToLower().Replace(" ", "") + ".txt");
                 string randomWord = categoryWords[random.Next(categoryWords.Length)];
                 words[categoryNum] = randomWord;
-                if (debugMessagesOn) Console.WriteLine($"(debug) added {randomWord} to game {categoryNum+1} of category {category}");
+                if (debugMessagesOn) Decor.Highlight($"^r^(debug)^g^ added {randomWord} to game {categoryNum+1} of category {category}\n");
             }
             return words;
         }
@@ -115,5 +150,41 @@ namespace wheeloffortuneandrobots
     public class AI: Player
     {
         // deal with this shit later
+    }
+
+    public class Decor
+    {
+        public static void Highlight(string line)
+        {
+            string[] splitLines = line.Split('^');
+            foreach (string splitLine in splitLines)
+            {
+                switch (splitLine)
+                {
+                    case "g":
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        break;
+                    case "y":
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        break;
+                    case "b":
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        break;
+                    case "r":
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        break;
+                    case "w":
+                    case "/g":
+                    case "/y":
+                    case "/b":
+                    case "/r":
+                        Console.ForegroundColor = ConsoleColor.White;
+                        break;
+                    default:
+                        Console.Write(splitLine);
+                        break;
+                }
+            }
+        }
     }
 }
