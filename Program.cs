@@ -2,6 +2,12 @@
 
 namespace wheeloffortuneandrobots
 {
+    public struct PlayerBase
+    {
+        public string name;
+        public int score;
+    }
+
     internal class Program
     {
         static void Main(string[] args)
@@ -26,12 +32,16 @@ namespace wheeloffortuneandrobots
         {
             int categoryCount = 3;  // link this to user-configurable game length
             string[] categories = GetGameCategories(categoryCount);
+            string[] words = GetGameWords(categories);
         }
 
         static string[] GetGameCategories(int categoryCount)
         {
-            string[] allCategories = ReadFileCategories();
+            string[] allCategories = ReadFile("../../../gamedata/allcategories.txt");
+
+            categoryCount = allCategories.Length < categoryCount ? allCategories.Length : categoryCount;
             string[] categories = new string[categoryCount];
+
             Random random = new Random();
 
             for (int i = 0; i < categoryCount; i++)
@@ -56,19 +66,40 @@ namespace wheeloffortuneandrobots
             return categories;
         }
 
-        static string[] ReadFileCategories()
+        static string[] GetGameWords(string[] categories)
         {
-            List<string> categories = new List<string>();
-            using (StreamReader reader = new("../../../gamedata/categories.txt"))
+            Random random = new Random();
+            string[] words = new string[categories.Length];
+
+            foreach (string category in categories)
+            {
+                int categoryNum = Array.IndexOf(categories, category);
+                string[] categoryWords = ReadFile("../../../gamedata/cat_"
+                    + category.ToLower().Replace(" ", "") + ".txt");
+                string randomWord = categoryWords[random.Next(categoryWords.Length)];
+                words[categoryNum] = randomWord;
+                if (debugMessagesOn) Console.WriteLine($"(debug) added {randomWord} to game {categoryNum+1} of category {category}");
+            }
+            return words;
+        }
+
+        /// <summary>
+        /// makes an array of strings from a text file
+        /// </summary>
+        /// <param name="filePath"></param>
+        static string[] ReadFile(string filePath)
+        {
+            List<string> lines = new List<string>();
+            using (StreamReader reader = new(filePath))
             {
                 string line;
                 while (!reader.EndOfStream)
                 {
                     line = reader.ReadLine();
-                    categories.Add(line);
+                    lines.Add(line);
                 }
             }
-            return categories.ToArray();
+            return lines.ToArray();
         }
     }
 
@@ -77,11 +108,7 @@ namespace wheeloffortuneandrobots
     /// </summary>
     public class Player
     {
-        public struct PlayerBase
-        {
-            public string name;
-            public int score;
-        }
+        // deal with this shit later
     }
 
 
