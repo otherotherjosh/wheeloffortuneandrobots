@@ -10,16 +10,33 @@ namespace wheeloffortuneandrobots
         public int score;
     }
 
+    public struct Game
+    {
+        public List<char> lettersUsed;
+        public Player player1;
+        public Player player2;
+        public Player player3;
+        public Player player4;
+    }
+
     internal class Program
     {
         static void Main(string[] args)
         {
-            WordGame.InitGame();
-            for (int i = 0; i < 3; i++)
-            {
-                
-                WordGame.PlayWordGameRound(i);
-            }
+
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class Gameplay
+    {
+        static bool debugMessagesOn = true;
+
+        public void Play()
+        {
+
         }
     }
 
@@ -31,16 +48,14 @@ namespace wheeloffortuneandrobots
     public class WordGame
     {
         static bool debugMessagesOn = true;
-        static char[] letters = new char[26];
+        static char[] letters = new char[26]; // not needed
         static string[] categories;
         static string[] words;
-        static List<char> lettersUsed = new List<char>();
+        //static List<char> lettersUsed = new List<char>();
         static bool roundOver;
 
-        /// <summary>
-        /// plays a round of the word game
-        /// </summary>
-        /// <param name="gameNumber"></param>
+        // some of this logic needs to be taken care of 
+        // by a the gameplay class
         public static void PlayWordGameRound(int gameNumber)
         {
             string category = categories[gameNumber];
@@ -70,6 +85,8 @@ namespace wheeloffortuneandrobots
             } while (!roundOver);
         }
 
+        // split this up into separate methods
+        // game logic will be used to call them conditionally
         static void PWGVisualizer(string category, string word)
         {
             Decor.Highlight($"\n\t^w^Category: ^e^{category}\n\n");
@@ -190,55 +207,6 @@ namespace wheeloffortuneandrobots
                 }
             }
             return lines.ToArray();
-        }
-    }
-
-    /// <summary>
-    /// where players game data is generated and stored
-    /// </summary>
-    public class Player
-    {
-        // deal with this shit later
-    }
-
-
-    public class AI: Player
-    {
-        // deal with this shit later
-    }
-
-    public class Decor
-    {
-        public static void Highlight(string line)
-        {
-            string[] splitLines = line.Split('^');
-            foreach (string splitLine in splitLines)
-            {
-                switch (splitLine)
-                {
-                    case "b":
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        break;
-                    case "e":
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        break;
-                    case "g":
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-                        break;
-                    case "r":
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        break;
-                    case "y":
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        break;
-                    case "w":
-                        Console.ForegroundColor = ConsoleColor.White;
-                        break;
-                    default:
-                        Console.Write(splitLine);
-                        break;
-                }
-            }
         }
     }
 }
