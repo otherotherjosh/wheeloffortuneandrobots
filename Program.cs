@@ -17,19 +17,42 @@ namespace wheeloffortuneandrobots
     /// </summary>
     public class WordGame
     {
+        static bool debugMessagesOn = true;
+
         /// <summary>
         /// generates the game categories
         /// </summary>
         public static void InitGame()
         {
-            //int categoryCount = 3;
-            //string[] categories = new string[categoryCount];
-            string[] categories = ReadFileCategories();
-            Console.WriteLine("(debug) items in category array");
-            foreach (string category in categories)
+            int categoryCount = 3;  // link this to user-configurable game length
+            string[] categories = GetGameCategories(categoryCount);
+        }
+
+        static string[] GetGameCategories(int categoryCount)
+        {
+            string[] allCategories = ReadFileCategories();
+            string[] categories = new string[categoryCount];
+            Random random = new Random();
+
+            for (int i = 0; i < categoryCount; i++)
             {
-                Console.WriteLine($"- {category}");
+                string chosenCategory;
+                do
+                {
+                    chosenCategory = allCategories[random.Next(allCategories.Length)];
+                } while (!categories.Contains(chosenCategory));
             }
+
+            if (debugMessagesOn)
+            {
+                Console.WriteLine("(debug) items in full category array");
+                foreach (string category in allCategories) Console.WriteLine($"- {category}");
+                Console.WriteLine();
+                Console.WriteLine("(debug) items in game category array");
+                foreach(string category in categories) Console.WriteLine($"- {category}");
+            }
+            
+            return categories;
         }
 
         static string[] ReadFileCategories()
