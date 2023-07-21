@@ -4,18 +4,6 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace wheeloffortuneandrobots
 {
-    public struct PlayerBase
-    {
-        public string name;
-        public int score;
-    }
-
-    public struct Game
-    {
-        public List<char> lettersUsed;
-        public Player[] player;
-    }
-
     internal class Program
     {
         static void Main(string[] args)
