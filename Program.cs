@@ -8,7 +8,14 @@ namespace wheeloffortuneandrobots
     {
         static void Main(string[] args)
         {
-            //
+            Console.WriteLine(Gameplay.className);
         }
+    }
+
+    public static class Gameplay
+    {
+        public static string className = "jeoffrey";
+
+        // idk im just experimenting with accessibility of class methods n shit
     }
 }
