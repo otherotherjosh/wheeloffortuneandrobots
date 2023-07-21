@@ -13,17 +13,14 @@ namespace wheeloffortuneandrobots
     public struct Game
     {
         public List<char> lettersUsed;
-        public Player player1;
-        public Player player2;
-        public Player player3;
-        public Player player4;
+        public Player[] player;
     }
 
     internal class Program
     {
         static void Main(string[] args)
         {
-
+            Gameplay.Play();
         }
     }
 
@@ -33,10 +30,35 @@ namespace wheeloffortuneandrobots
     public class Gameplay
     {
         static bool debugMessagesOn = true;
+        static Game game;
 
-        public void Play()
+        public static void Play()
         {
+            int playerNum = 0;
+            InitGame();
+            game.player[playerNum].DisplayTurn();
+        }
 
+        static void InitGame()
+        {
+            game = new Game();
+            
+            game.player[0] = new Player();
+            game.player[1] = new Player();
+            game.player[2] = new Player();
+            game.player[3] = new Player();
+
+            game.player[0].name = "Josh";
+            game.player[0].color = "MAGENTA";
+
+            game.player[1].name = "Jenna";
+            game.player[1].color = "BLUE";
+
+            game.player[2].name = "Keyra";
+            game.player[2].color = "GREEN";
+
+            game.player[3].name = "ChrissyMC";
+            game.player[3].color = "YELLOW";
         }
     }
 
@@ -54,13 +76,14 @@ namespace wheeloffortuneandrobots
         //static List<char> lettersUsed = new List<char>();
         static bool roundOver;
 
+        /*
         // some of this logic needs to be taken care of 
         // by a the gameplay class
         public static void PlayWordGameRound(int gameNumber)
         {
             string category = categories[gameNumber];
             string word = words[gameNumber];
-            lettersUsed = new List<char>();
+            Game.lettersUsed = new List<char>();
             roundOver = false;
 
             do // incorrect conditional for ending the round
@@ -75,7 +98,7 @@ namespace wheeloffortuneandrobots
                     {
                         char letter = Convert.ToChar(userInput);
                         if (letters.Contains(letter)
-                            && ! lettersUsed.Contains(letter)) lettersUsed.Add(letter);
+                            && ! Game.lettersUsed.Contains(letter)) Game.lettersUsed.Add(letter);
                     }
                 }
                 else
@@ -97,7 +120,7 @@ namespace wheeloffortuneandrobots
             roundOver = true;
             foreach (char wordLetter in wordLetters)
             {
-                if (lettersUsed.Contains(wordLetter)) Decor.Highlight($"^w^{wordLetter} ");
+                if (Game.lettersUsed.Contains(wordLetter)) Decor.Highlight($"^w^{wordLetter} ");
                 else if (letters.Contains(wordLetter))
                 {
                     roundOver = false;
@@ -115,7 +138,7 @@ namespace wheeloffortuneandrobots
             {
                 foreach (char letter in letters)
                 {
-                    if (lettersUsed.Contains(letter)) Decor.Highlight($"^g^{letter} ^w^");
+                    if (Game.lettersUsed.Contains(letter)) Decor.Highlight($"^g^{letter} ^w^");
                     else Decor.Highlight($"^b^{letter} ^w^");
                 }
             }
@@ -124,6 +147,7 @@ namespace wheeloffortuneandrobots
                 Console.WriteLine("Congrats! :D");
             }
         }
+        */
 
         /// <summary>
         /// generates the game categories

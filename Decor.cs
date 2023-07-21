@@ -31,4 +31,32 @@
             }
         }
     }
+
+    public static void TextColor(string color)
+    {
+        switch (color)
+        {
+            case "BLUE":
+                Console.ForegroundColor = ConsoleColor.Blue;
+                break;
+            case "CYAN":
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                break;
+            case "GREEN":
+                Console.ForegroundColor = ConsoleColor.Green;
+                break;
+            case "MAGENTA":
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                break;
+            case "RED":
+                Console.ForegroundColor = ConsoleColor.Red;
+                break;
+            case "YELLOW":
+                Console.ForegroundColor = ConsoleColor.Red;
+                break;
+            case "RESET":
+                Console.ForegroundColor = ConsoleColor.White;
+                break;
+        }
+    }
 }
