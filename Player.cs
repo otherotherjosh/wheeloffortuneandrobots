@@ -47,6 +47,17 @@ public class Player
         }
     }
 
+    public void SpendMoney(int amount)
+    {
+        Money -= amount;
+        if (debugMessagesOn)
+        {
+            Decor.DebugLine();
+            Decor.Highlight($"{Name} has ${Money} (-${amount})\n");
+            Decor.StandBy();
+        }
+    }
+
     public void Bankrupt()
     {
         int amountLost = Money;
@@ -97,15 +108,59 @@ public class Player
         return guess;
     }
 
-    public void ShowTurn(int letterValue = 0)
+    public char BuyVowel(string lettersUsed)
+    {
+        bool validVowel = false;
+        string userInput;
+        char buyingVowel;
+        do
+        {
+            Decor.InputLine(Color);
+            userInput = Console.ReadLine()
+                .ToUpper()
+                .Replace(" ", "");
+            validVowel = (WordPuzzle.IsLetter(userInput)
+                && !lettersUsed.Contains(userInput)
+                && WordPuzzle.IsVowel(userInput));
+            if (!validVowel)
+            {
+                Decor.TextColor("GRAY");
+                Console.Write("    ");
+                if (userInput.Length == 0)
+                    Console.WriteLine("please input a letter");
+                else if (userInput.Length > 1)
+                    Console.WriteLine("cannot input more than 1 letter");
+                else if (!WordPuzzle.IsLetter(userInput))
+                    Console.WriteLine("cannot enter that symbol");
+                else if (!WordPuzzle.IsVowel(userInput))
+                    Console.WriteLine("cannot input a consonant");
+                else if (lettersUsed.Contains(userInput))
+                    Console.WriteLine("that letter has already been guessed");
+                else
+                    Console.WriteLine("error: wump (unknown error)");
+            }
+            Console.WriteLine();
+            Decor.TextColor();
+        } while (!validVowel);
+        buyingVowel = Convert.ToChar(userInput);
+        SpendMoney(250);
+        return buyingVowel;
+    }
+
+    public void ShowTurn(int value = 0)
     {
         Decor.TextColor(Color);
         Console.WriteLine($"{Name}'s turn");
-        Console.WriteLine($"{Money:C0}");
-        if (letterValue != 0)
+        Console.WriteLine($"${Money}");
+        if (value > 0)
         {
             Decor.TextColor("GRAY");
-            Console.WriteLine($"playing for ${letterValue}");
+            Console.WriteLine($"playing for ${value}");
+        }
+        else if (value < 0)
+        {
+            Decor.TextColor("GRAY");
+            Console.WriteLine($"buying for -${0-value}");
         }
         Decor.TextColor();
     }

@@ -116,16 +116,16 @@ namespace wheeloffortuneandrobots
                 Console.Clear();
                 currentPlayer.ShowTurn();
                 currentPuzzle.ShowWordPuzzle();
-                RoundMenu(currentPuzzle);
+                RoundMenu();
             }
         }
 
-        static void RoundMenu(WordPuzzle wordPuzzle)
+        static void RoundMenu()
         {
             string color = currentPlayer.Color;
-            bool canBuyVowel = wordPuzzle.VowelsRemaining() && currentPlayer.Money >= 250;
+            bool canBuyVowel = currentPuzzle.VowelsRemaining() && currentPlayer.Money >= 250;
 
-            if (wordPuzzle.ConsonantsRemaining())
+            if (currentPuzzle.ConsonantsRemaining())
             {
                 Decor.TextColor(color);
                 Console.Write("\n\n\t[1] ");
@@ -166,7 +166,7 @@ namespace wheeloffortuneandrobots
                     // (if player has enough money)
                     // can buy more than one per turn
                     if (canBuyVowel)
-                        BuyVowel();
+                        currentPuzzle.BuyVowel(currentPlayer);
                     break;
             }
         }
@@ -183,11 +183,6 @@ namespace wheeloffortuneandrobots
         }
 
         static void SolvePuzzle()
-        {
-
-        }
-
-        static void BuyVowel()
         {
 
         }
@@ -239,6 +234,29 @@ namespace wheeloffortuneandrobots
             }
         }
 
+        public void BuyVowel(Player currentPlayer)
+        {
+            Console.Clear();
+            currentPlayer.ShowTurn(-250);
+            ShowWordPuzzle();
+            ShowKeyboard("vowels", currentPlayer.Color);
+            char buyingVowel = currentPlayer.BuyVowel(lettersCorrect + lettersWrong);
+            if (phrase.Contains(buyingVowel))
+            {
+                lettersCorrect += buyingVowel;
+                if (!VowelsRemaining())
+                {
+                    Console.WriteLine("There are no vowels remaining!");
+                    Console.ReadLine();
+                }
+
+            }
+            else
+            {
+                lettersWrong += buyingVowel;
+            }
+        }
+
         public void ShowWordPuzzle()
         {
             Console.WriteLine($"\n\t{category}:");
@@ -266,7 +284,7 @@ namespace wheeloffortuneandrobots
             Console.WriteLine();
         }
 
-        void ShowKeyboard(string keyboardMode, string playerColor)
+        public void ShowKeyboard(string keyboardMode, string playerColor)
         {
             Console.Write("\n\n\t");
             string color;
@@ -316,7 +334,8 @@ namespace wheeloffortuneandrobots
         {
             foreach (char vowel in vowels)
             {
-                if (!(lettersCorrect + lettersWrong).Contains(vowel))
+                if (!(lettersCorrect + lettersWrong).Contains(vowel)
+                    && phrase.Contains(vowel))
                     return true;
             }
             return false;
