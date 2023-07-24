@@ -12,40 +12,50 @@ public struct PlayerBase
 
 public class Player
 {
-    static bool debugMessagesOn = false;
+    static bool debugMessagesOn = true;
 
     private string name;
     private string color;
-    int money;
+    private int money;
 
     public string Name { get; set; }
     public string Color { get; set; }
+    public int Money { get; set; }
 
     public Player(string name, string color = "DEFAULT")
     {
         this.Name = name;
         this.Color = color;
-        this.money = 0;
+        this.Money = 0;
+    }
+
+    public string RoundMenu()
+    {
+        Decor.InputLine(Color);
+        string userInput = Console.ReadLine();
+        return userInput;
     }
 
     public void ReceiveMoney(int amount)
     {
-        money += amount;
+        Money += amount;
         if (debugMessagesOn)
         {
             Decor.DebugLine();
-            Decor.Highlight($"{name} has {money:C} (+{amount:C})\n");
+            Decor.Highlight($"{Name} has ${Money} (+${amount})\n");
+            Decor.StandBy();
         }
     }
 
     public void Bankrupt()
     {
-        int amountLost = money;
-        money = 0;
+        int amountLost = Money;
+        Money = 0;
         if (debugMessagesOn)
         {
             Decor.DebugLine();
-            Decor.Highlight($"{name} has {money:C} (-{amountLost:C})\n");
+            Decor.Highlight($"{name} has ${Money} (-${amountLost:C})\n");
+            Decor.StandBy();
         }
     }
 
@@ -87,15 +97,15 @@ public class Player
         return guess;
     }
 
-    public void ShowTurn(int playingFor = 0)
+    public void ShowTurn(int letterValue = 0)
     {
         Decor.TextColor(Color);
         Console.WriteLine($"{Name}'s turn");
-        Console.WriteLine($"{money:C0}");
-        if (playingFor != 0)
+        Console.WriteLine($"{Money:C0}");
+        if (letterValue != 0)
         {
             Decor.TextColor("GRAY");
-            Console.WriteLine($"playing for {playingFor:C}");
+            Console.WriteLine($"playing for ${letterValue}");
         }
         Decor.TextColor();
     }

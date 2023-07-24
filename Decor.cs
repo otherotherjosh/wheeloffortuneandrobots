@@ -78,4 +78,12 @@
         TextColor(color);
         Console.Write(">>> ");
     }
+
+    public static void StandBy()
+    {
+        Highlight("\n" +
+            "^g^Press ENTER to continue^w^");
+        Console.ReadLine();
+        TextColor();
+    }
 }

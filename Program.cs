@@ -48,14 +48,20 @@ namespace wheeloffortuneandrobots
 
     public static class Game
     {
-        static bool debugMessagesOn = false;
+        static bool debugMessagesOn = true;
 
+        // per game variables
         static int numOfRounds;
         static int numOfPlayers;
-        static int playerID;
         static Player[] players;
         static string[] categories;
         static string[] phrases;
+
+        // per round variables
+        static int spinValue;
+        static int currentPlayerID;
+        static Player currentPlayer;
+        static WordPuzzle currentPuzzle;
 
         static void InitGame()
         {
@@ -87,38 +93,117 @@ namespace wheeloffortuneandrobots
                     Console.WriteLine($"          Letters: {WordPuzzle.PhraseLetters(phrases[i])}");
                     Decor.TextColor();
                 }
+                Decor.StandBy();
             }
         }
 
         public static void Play()
         {
             InitGame();
-            playerID = 0;
+            currentPlayerID = 0;
+            currentPlayer = players[currentPlayerID];
             for (int round = 0; round < numOfRounds; round++)
             {
                 PlayRound(round);
-                NextPlayerTurn();
             }
         }
 
         static void PlayRound(int round)
         {
-            WordPuzzle wordPuzzle = new WordPuzzle(categories[round], phrases[round]);
-            while (!wordPuzzle.IsSolved())
+            currentPuzzle = new WordPuzzle(categories[round], phrases[round]);
+            while (!currentPuzzle.IsSolved())
             {
-                wordPuzzle.PlayRound(players[playerID]);
+                Console.Clear();
+                currentPlayer.ShowTurn();
+                currentPuzzle.ShowWordPuzzle();
+                RoundMenu(currentPuzzle);
             }
         }
 
+        static void RoundMenu(WordPuzzle wordPuzzle)
+        {
+            string color = currentPlayer.Color;
+            bool canBuyVowel = wordPuzzle.VowelsRemaining() && currentPlayer.Money >= 250;
+
+            if (wordPuzzle.ConsonantsRemaining())
+            {
+                Decor.TextColor(color);
+                Console.Write("\n\n\t[1] ");
+                Decor.TextColor();
+                Console.Write("Spin Wheel");
+            }
+
+            Decor.TextColor(color);
+            Console.Write("\n\t[2] ");
+            Decor.TextColor();
+            Console.Write("Solve");
+
+            if (canBuyVowel)
+            {
+                Decor.TextColor(color);
+                Console.Write("\n\t[3] ");
+                Decor.TextColor();
+                Console.Write("Buy Vowel ($250)");
+            }
+
+            Console.WriteLine("\n");
+
+            string userInput = currentPlayer.RoundMenu();
+
+            switch (userInput)
+            {
+                case "1":
+                    // spin wheel
+                    // then guess consonant if there are any left
+                    SpinWheel();
+                    break;
+                case "2":
+                    // solve
+                    // (always available)
+                    break;
+                case "3":
+                    // buy vowel
+                    // (if player has enough money)
+                    // can buy more than one per turn
+                    if (canBuyVowel)
+                        BuyVowel();
+                    break;
+            }
+        }
+
+        static void SpinWheel()
+        {
+            Console.Clear();
+            spinValue = Wheel.Spin(currentPlayer);
+
+            if (currentPuzzle.ConsonantsRemaining())
+            {
+                currentPuzzle.GuessConsonant(currentPlayer, spinValue);
+            }
+        }
+
+        static void SolvePuzzle()
+        {
+
+        }
+
+        static void BuyVowel()
+        {
+
+        }
+
         public static void NextPlayerTurn()
-            => playerID = (playerID + 1) % numOfPlayers;
+        {
+            currentPlayerID = (currentPlayerID + 1) % numOfPlayers;
+            currentPlayer = players[currentPlayerID];
+        }
     }
 
     public class WordPuzzle
     {
         static string vowels = "AEIOU";
-        static Player currentPlayer;
-        static int roundWorth;
+        //static Player currentPlayer;  // shouldnt be needed in this class
+        //static int roundWorth;
 
         string category;
         string phrase;
@@ -133,41 +218,18 @@ namespace wheeloffortuneandrobots
             this.lettersCorrect = "";
         }
 
-        public void PlayRound(Player player)
+        public void GuessConsonant(Player currentPlayer, int spinValue)
         {
-            Random rand = new Random();
-            currentPlayer = player;
-            // random amount of money for testing
-
-            RoundMenu();
-        }
-
-        void RoundMenu()
-        {
-            string color = currentPlayer.Color;
             Console.Clear();
-            currentPlayer.ShowTurn(roundWorth);
+            currentPlayer.ShowTurn(spinValue);
             ShowWordPuzzle();
-            // ask player to buy vowel, choose consonant or solve
-            if (NoConsonantsLeft())
-            {
-                Console.WriteLine("Oops no consonants left");
-                Console.ReadLine();
-            }
-            else
-            {
-                roundWorth = Wheel.Spin();
-                GuessConsonant();
-            }
-        }
-
-        void GuessConsonant()
-        {
             ShowKeyboard("consonants", currentPlayer.Color);
             char playerGuess = currentPlayer.GuessConsonant(lettersCorrect+lettersWrong);
-            if (PhraseLetters(phrase).Contains(playerGuess))
+            int letterCount = GuessedLetterCount(playerGuess);
+            if (letterCount > 0)
             {
-                currentPlayer.ReceiveMoney(roundWorth);
+                int reward = letterCount * spinValue;
+                currentPlayer.ReceiveMoney(reward);
                 lettersCorrect += playerGuess;
             }
             else
@@ -177,7 +239,7 @@ namespace wheeloffortuneandrobots
             }
         }
 
-        void ShowWordPuzzle()
+        public void ShowWordPuzzle()
         {
             Console.WriteLine($"\n\t{category}:");
             int charLimit = 13;
@@ -229,15 +291,35 @@ namespace wheeloffortuneandrobots
             Console.WriteLine("\n");
         }
 
-        bool NoConsonantsLeft()
+        int GuessedLetterCount(char guessedLetter)
+        {
+            int count = 0;
+            foreach (char letter in phrase)
+            {
+                count = (letter == guessedLetter) ? count + 1 : count;
+            }
+            return count;
+        }
+
+        public bool ConsonantsRemaining()
         {
             for (char consonantCheck = 'B'; consonantCheck <= 'Z'; consonantCheck++)
             {
                 if (!(lettersCorrect + lettersWrong).Contains(consonantCheck)
                     && !IsVowel(consonantCheck.ToString()))
-                    return false;
+                    return true;
             }
-            return true;
+            return false;
+        }
+
+        public bool VowelsRemaining()
+        {
+            foreach (char vowel in vowels)
+            {
+                if (!(lettersCorrect + lettersWrong).Contains(vowel))
+                    return true;
+            }
+            return false;
         }
 
         public bool IsSolved()
