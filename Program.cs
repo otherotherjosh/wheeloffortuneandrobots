@@ -138,19 +138,27 @@ namespace wheeloffortuneandrobots
             Random rand = new Random();
             currentPlayer = player;
             // random amount of money for testing
-            roundWorth = rand.Next(1000);
 
+            RoundMenu();
+        }
+
+        void RoundMenu()
+        {
+            string color = currentPlayer.Color;
             Console.Clear();
-            player.ShowTurn(roundWorth);
+            currentPlayer.ShowTurn(roundWorth);
             ShowWordPuzzle();
             // ask player to buy vowel, choose consonant or solve
             if (NoConsonantsLeft())
             {
-                Console.WriteLine("Oops. Ran out of consonants.");
+                Console.WriteLine("Oops no consonants left");
                 Console.ReadLine();
             }
             else
+            {
+                roundWorth = Wheel.Spin();
                 GuessConsonant();
+            }
         }
 
         void GuessConsonant()
