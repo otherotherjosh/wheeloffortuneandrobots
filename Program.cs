@@ -118,6 +118,7 @@ namespace wheeloffortuneandrobots
     {
         static string vowels = "AEIOU";
         static Player currentPlayer;
+        static int roundWorth;
 
         string category;
         string phrase;
@@ -134,9 +135,13 @@ namespace wheeloffortuneandrobots
 
         public void PlayRound(Player player)
         {
-            Console.Clear();
+            Random rand = new Random();
             currentPlayer = player;
-            player.ShowTurn();
+            // random amount of money for testing
+            roundWorth = rand.Next(1000);
+
+            Console.Clear();
+            player.ShowTurn(roundWorth);
             ShowWordPuzzle();
             // ask player to buy vowel, choose consonant or solve
             if (NoConsonantsLeft())
@@ -153,7 +158,10 @@ namespace wheeloffortuneandrobots
             ShowKeyboard("consonants", currentPlayer.Color);
             char playerGuess = currentPlayer.GuessConsonant(lettersCorrect+lettersWrong);
             if (PhraseLetters(phrase).Contains(playerGuess))
+            {
+                currentPlayer.ReceiveMoney(roundWorth);
                 lettersCorrect += playerGuess;
+            }
             else
             {
                 lettersWrong += playerGuess;
