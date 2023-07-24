@@ -1,5 +1,6 @@
 ﻿// https://www.wheeloffortunecheats.com/
 
+using System.Numerics;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -116,6 +117,7 @@ namespace wheeloffortuneandrobots
     public class WordPuzzle
     {
         static string vowels = "AEIOU";
+        static Player currentPlayer;
 
         string category;
         string phrase;
@@ -133,13 +135,25 @@ namespace wheeloffortuneandrobots
         public void PlayRound(Player player)
         {
             Console.Clear();
+            currentPlayer = player;
             player.ShowTurn();
             ShowWordPuzzle();
             // ask player to buy vowel, choose consonant or solve
             // i have hard coded to choose consonant only
-            ShowKeyboard("consonants", player.Color);  
-            Game.NextPlayerTurn();
-            Console.ReadLine();
+            GuessConsonant();
+        }
+
+        void GuessConsonant()
+        {
+            ShowKeyboard("consonants", currentPlayer.Color);
+            char playerGuess = currentPlayer.GuessConsonant(lettersCorrect+lettersWrong);
+            if (PhraseLetters(phrase).Contains(playerGuess))
+                lettersCorrect += playerGuess;
+            else
+            {
+                lettersWrong += playerGuess;
+                Game.NextPlayerTurn();
+            }
         }
 
         void ShowWordPuzzle()
@@ -175,7 +189,7 @@ namespace wheeloffortuneandrobots
             string color;
             for (char letter = 'A'; letter <= 'Z'; letter++)
             {
-                if (lettersWrong.Contains(letter))
+                if ((lettersWrong+lettersCorrect).Contains(letter))
                     Decor.TextColor("GRAY");
                 else if (vowels.Contains(letter))
                 {
@@ -191,11 +205,27 @@ namespace wheeloffortuneandrobots
                 Console.Write(letter + " ");
             }
             Decor.TextColor();
-            Console.WriteLine();
+            Console.WriteLine("\n");
         }
 
         public bool IsSolved()
             => lettersCorrect.Length == PhraseLetters(phrase).Length;
+
+        public static bool IsVowel(string letter)
+            => vowels.Contains(letter);
+
+        public static bool IsLetter(string letter)
+        {
+            if (letter.Length != 1) return false;
+
+            char letterToCheck = Convert.ToChar(letter);
+            for (char letterCompare = 'A'; letterCompare <= 'Z'; letterCompare++)
+            {
+                if (letterToCheck == letterCompare) return true;
+            }
+
+            return false;
+        }
 
         public static string[] GetWords(int numOfRounds, out string[] categories)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using wheeloffortuneandrobots;
 
 /// <summary>
 /// where players game data is stored
@@ -46,6 +47,44 @@ public class Player
             Decor.DebugLine();
             Decor.Highlight($"{name} has {money:C} (-{amountLost:C})\n");
         }
+    }
+
+    public char GuessConsonant(string lettersUsed)
+    {
+        bool validGuess = false;
+        string userInput;
+        char guess;
+        do
+        {
+            Decor.InputLine(Color);
+            userInput = Console.ReadLine()
+                .ToUpper()
+                .Replace(" ", "");
+            validGuess = (WordPuzzle.IsLetter(userInput)
+                && !lettersUsed.Contains(userInput)
+                && !WordPuzzle.IsVowel(userInput));
+            if (!validGuess)
+            {
+                Decor.TextColor("GRAY");
+                Console.Write("    ");
+                if (userInput.Length == 0)
+                    Console.WriteLine("please input a letter");
+                else if (userInput.Length > 1)
+                    Console.WriteLine("cannot input more than 1 letter");
+                else if (!WordPuzzle.IsLetter(userInput))
+                    Console.WriteLine("cannot enter that symbol");
+                else if (WordPuzzle.IsVowel(userInput))
+                    Console.WriteLine("cannot input a vowel");
+                else if (lettersUsed.Contains(userInput))
+                    Console.WriteLine("that letter has already been guessed");
+                else
+                    Console.WriteLine("error: womp (unknown error)");
+            }
+            Console.WriteLine();
+            Decor.TextColor();
+        } while (!validGuess);
+        guess = Convert.ToChar(userInput);
+        return guess;
     }
 
     public void ShowTurn(int playingFor = 0)
