@@ -139,8 +139,13 @@ namespace wheeloffortuneandrobots
             player.ShowTurn();
             ShowWordPuzzle();
             // ask player to buy vowel, choose consonant or solve
-            // i have hard coded to choose consonant only
-            GuessConsonant();
+            if (NoConsonantsLeft())
+            {
+                Console.WriteLine("Oops. Ran out of consonants.");
+                Console.ReadLine();
+            }
+            else
+                GuessConsonant();
         }
 
         void GuessConsonant()
@@ -206,6 +211,17 @@ namespace wheeloffortuneandrobots
             }
             Decor.TextColor();
             Console.WriteLine("\n");
+        }
+
+        bool NoConsonantsLeft()
+        {
+            for (char consonantCheck = 'B'; consonantCheck <= 'Z'; consonantCheck++)
+            {
+                if (!(lettersCorrect + lettersWrong).Contains(consonantCheck)
+                    && !IsVowel(consonantCheck.ToString()))
+                    return false;
+            }
+            return true;
         }
 
         public bool IsSolved()
