@@ -169,10 +169,10 @@ public class Player
     {
         int numOfPlayers = 4;  // range from 2 - 4
         Player[] players = new Player[numOfPlayers];
-        players[0] = new Player("Josh", "MAGENTA");
-        players[1] = new Player("Keyra", "GREEN");
-        players[2] = new Player("Jenna", "PURPLE");
-        players[3] = new Player("Deon", "CYAN");
+        players[0] = new Player("Player 1", "MAGENTA");
+        players[1] = new Player("Player 2", "GREEN");
+        players[2] = new Player("Player 3", "PURPLE");
+        players[3] = new Player("Player 4", "CYAN");
         return players;
     }
 }
