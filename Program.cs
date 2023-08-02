@@ -10,7 +10,6 @@ namespace wheeloffortuneandrobots
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Gameplay.className);
             Game.Play();
         }
 
@@ -185,7 +184,7 @@ namespace wheeloffortuneandrobots
 
         static void SolvePuzzle()
         {
-
+            // WORK ON ThIS !!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
 
         public static void NextPlayerTurn()
@@ -198,8 +197,6 @@ namespace wheeloffortuneandrobots
     public class WordPuzzle
     {
         static string vowels = "AEIOU";
-        //static Player currentPlayer;  // shouldnt be needed in this class
-        //static int roundWorth;
 
         string category;
         string phrase;
@@ -393,8 +390,6 @@ namespace wheeloffortuneandrobots
 
     public static class Gameplay
     {
-        public static string className = "jeoffrey";
-
-        // idk im just experimenting with accessibility of class methods n shit
+        // i literally forgot what this class is for
     }
 }
